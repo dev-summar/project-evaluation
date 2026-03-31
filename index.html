@@ -99,9 +99,10 @@
       position: sticky; top: 10px; z-index: 10;
       margin-bottom: 12px; padding: 10px;
       display: grid; grid-template-columns: 1fr 190px 210px auto auto; gap: 10px;
-      background: color-mix(in srgb, var(--surface-solid) 88%, transparent);
+      background: color-mix(in srgb, var(--surface-solid) 96%, transparent);
       border: 1px solid var(--line); border-radius: var(--radius-md);
       box-shadow: var(--shadow-soft); backdrop-filter: blur(8px);
+      align-items: center;
     }
 
     .search-wrap { position: relative; }
@@ -117,6 +118,7 @@
       padding: 10px 12px;
       font: inherit;
       transition: all .2s ease;
+      min-height: 44px;
     }
     input { width: 100%; padding-left: 34px; }
     input:focus, select:focus {
@@ -213,6 +215,15 @@
     @media (max-width: 1024px) {
       .controls { grid-template-columns: 1fr 180px 180px auto auto; }
     }
+    .theme-btn {
+      width: 44px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
     @media (max-width: 768px) {
       .container { width: min(96vw, 1240px); margin-top: 14px; }
       .controls {
@@ -220,7 +231,8 @@
         grid-template-columns: 1fr 1fr;
       }
       .controls .search-wrap { grid-column: 1 / -1; }
-      .controls .find-btn, .controls .theme-btn { grid-column: span 1; }
+      .controls .find-btn { grid-column: 1 / 2; width: 100%; }
+      .controls .theme-btn { grid-column: 2 / 3; justify-self: end; }
       .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .table-wrap { display: none; }
       .mobile-list { display: grid; }
@@ -233,7 +245,7 @@
       <h1 class="title">Student Project Groups & Review Schedule</h1>
       <p class="subtitle">Search first, confirm panel quickly, and see exact review slots.</p>
       <div class="hero-meta">
-        <span class="meta-pill">🕙 Start: 10:00 PM</span>
+        <span class="meta-pill">🕙 Start: 10:00 AM</span>
         <span class="meta-pill">🧭 Panels: A(17), B(17), C(16)</span>
         <span class="meta-pill">⏱ Duration: 15 min / group</span>
       </div>
@@ -299,7 +311,7 @@
     const findMineBtn = document.getElementById("findMine");
     const themeToggle = document.getElementById("themeToggle");
 
-    const start = new Date(2026, 3, 2, 22, 0, 0);
+    const start = new Date(2026, 3, 2, 10, 0, 0);
     const sortedByGroup = [...raw].sort((a, b) => Number(a.groupNumber) - Number(b.groupNumber));
     const addMins = (d, m) => new Date(d.getTime() + m * 60000);
     const formatTime = (d) => {
