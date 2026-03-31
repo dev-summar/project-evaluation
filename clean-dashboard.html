@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Project Groups & Review Schedule</title>
+  <style>
+    :root {
+      --bg: #f5f8ff;
+      --bg-grad-a: rgba(59, 130, 246, 0.14);
+      --bg-grad-b: rgba(16, 185, 129, 0.10);
+      --surface: rgba(255, 255, 255, 0.82);
+      --surface-solid: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --line: rgba(148, 163, 184, 0.28);
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.10);
+      --shadow-soft: 0 8px 20px rgba(15, 23, 42, 0.08);
+      --brand: #2563eb;
+      --brand-soft: #dbeafe;
+      --ok: #047857;
+      --ok-soft: #dcfce7;
+      --panel-a-bg: #dbeafe;
+      --panel-a-tx: #1e40af;
+      --panel-b-bg: #ffedd5;
+      --panel-b-tx: #9a3412;
+      --panel-c-bg: #d1fae5;
+      --panel-c-tx: #065f46;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+    }
+
+    .dark {
+      --bg: #0b1220;
+      --bg-grad-a: rgba(37, 99, 235, 0.18);
+      --bg-grad-b: rgba(16, 185, 129, 0.14);
+      --surface: rgba(15, 23, 42, 0.78);
+      --surface-solid: #0f172a;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --line: rgba(148, 163, 184, 0.20);
+      --shadow: 0 16px 32px rgba(2, 6, 23, 0.5);
+      --shadow-soft: 0 10px 24px rgba(2, 6, 23, 0.45);
+      --brand-soft: rgba(37, 99, 235, 0.2);
+      --ok-soft: rgba(16, 185, 129, 0.2);
+      --panel-a-bg: rgba(37, 99, 235, 0.22);
+      --panel-a-tx: #bfdbfe;
+      --panel-b-bg: rgba(249, 115, 22, 0.2);
+      --panel-b-tx: #fed7aa;
+      --panel-c-bg: rgba(16, 185, 129, 0.2);
+      --panel-c-tx: #a7f3d0;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1000px 500px at -10% -20%, var(--bg-grad-a), transparent),
+        radial-gradient(900px 500px at 110% -20%, var(--bg-grad-b), transparent),
+        var(--bg);
+    }
+
+    .container { width: min(1240px, 94vw); margin: 24px auto 36px; }
+    .glass {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .hero { position: relative; overflow: hidden; padding: 22px; margin-bottom: 14px; }
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 340px;
+      height: 340px;
+      right: -120px;
+      top: -140px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(37, 99, 235, 0.22) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .title { margin: 0; font-size: clamp(1.45rem, 2.8vw, 2.05rem); letter-spacing: -0.02em; font-weight: 800; }
+    .subtitle { margin: 8px 0 0; color: var(--muted); max-width: 74ch; }
+    .hero-meta { margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .meta-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 11px; border-radius: 999px;
+      border: 1px solid var(--line); background: var(--surface-solid);
+      font-size: .82rem; font-weight: 600;
+    }
+
+    .controls {
+      position: sticky; top: 10px; z-index: 10;
+      margin-bottom: 12px; padding: 10px;
+      display: grid; grid-template-columns: 1fr 190px 210px auto auto; gap: 10px;
+      background: color-mix(in srgb, var(--surface-solid) 88%, transparent);
+      border: 1px solid var(--line); border-radius: var(--radius-md);
+      box-shadow: var(--shadow-soft); backdrop-filter: blur(8px);
+    }
+
+    .search-wrap { position: relative; }
+    .search-wrap .icon {
+      position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+      color: var(--muted); font-size: 14px;
+    }
+    input, select, button {
+      border: 1px solid var(--line);
+      background: var(--surface-solid);
+      color: var(--text);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font: inherit;
+      transition: all .2s ease;
+    }
+    input { width: 100%; padding-left: 34px; }
+    input:focus, select:focus {
+      outline: none;
+      border-color: color-mix(in srgb, var(--brand) 60%, var(--line));
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 16%, transparent);
+    }
+    button { cursor: pointer; white-space: nowrap; font-weight: 600; }
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #fff; border-color: transparent;
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 16px rgba(37, 99, 235, 0.28); }
+
+    .stats {
+      display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px; margin-bottom: 12px;
+    }
+    .stat {
+      padding: 12px; border-radius: var(--radius-md);
+      border: 1px solid var(--line); background: var(--surface);
+      box-shadow: var(--shadow-soft); transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .stat:hover { transform: translateY(-2px) scale(1.01); box-shadow: var(--shadow); }
+    .stat-head { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+    .stat-value { margin-top: 6px; font-size: 1.55rem; font-weight: 800; }
+    .ic { width: 18px; height: 18px; display: inline-block; border-radius: 6px; }
+    .ic-neutral { background: linear-gradient(135deg, #e2e8f0, #cbd5e1); }
+    .ic-a { background: linear-gradient(135deg, #bfdbfe, #93c5fd); }
+    .ic-b { background: linear-gradient(135deg, #fed7aa, #fdba74); }
+    .ic-c { background: linear-gradient(135deg, #a7f3d0, #6ee7b7); }
+
+    .table-shell {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .table-wrap { max-height: 68vh; overflow: auto; }
+    table { width: 100%; border-collapse: separate; border-spacing: 0; }
+    th, td { text-align: left; padding: 13px 12px; vertical-align: top; }
+    th {
+      position: sticky; top: 0; z-index: 2;
+      background: color-mix(in srgb, var(--surface-solid) 92%, transparent);
+      border-bottom: 1px solid var(--line);
+      color: var(--muted); font-size: .74rem; text-transform: uppercase; letter-spacing: .05em;
+    }
+    tbody td { border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent); }
+    tbody tr:nth-child(even) { background: color-mix(in srgb, var(--surface-solid) 95%, transparent); }
+    tbody tr:hover { background: color-mix(in srgb, var(--brand-soft) 48%, transparent); }
+
+    .members { display: flex; flex-wrap: wrap; gap: 6px; }
+    .member {
+      border: 1px solid var(--line); background: var(--surface-solid);
+      padding: 4px 9px; border-radius: 999px; font-size: .78rem;
+    }
+    .lead { border-color: color-mix(in srgb, var(--brand) 35%, var(--line)); background: var(--brand-soft); font-weight: 700; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 10px; border-radius: 999px; font-size: .76rem; font-weight: 700;
+      border: 1px solid transparent;
+    }
+    .panel-a { color: var(--panel-a-tx); background: var(--panel-a-bg); border-color: color-mix(in srgb, var(--panel-a-tx) 26%, transparent); }
+    .panel-b { color: var(--panel-b-tx); background: var(--panel-b-bg); border-color: color-mix(in srgb, var(--panel-b-tx) 26%, transparent); }
+    .panel-c { color: var(--panel-c-tx); background: var(--panel-c-bg); border-color: color-mix(in srgb, var(--panel-c-tx) 26%, transparent); }
+    .slot {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--ok-soft); color: var(--ok);
+      border: 1px solid color-mix(in srgb, var(--ok) 24%, transparent);
+      border-radius: 999px; padding: 6px 10px; font-size: .78rem; font-weight: 700; white-space: nowrap;
+    }
+    mark { background: #fef08a; padding: 0 .12em; border-radius: 4px; color: inherit; }
+
+    .empty {
+      display: none; text-align: center; color: var(--muted); padding: 28px 14px;
+      animation: fadeIn .24s ease;
+    }
+    .empty .ico { font-size: 2rem; display: block; margin-bottom: 6px; }
+
+    .mobile-list { display: none; padding: 10px; gap: 10px; background: color-mix(in srgb, var(--surface-solid) 95%, transparent); }
+    .m-card {
+      background: var(--surface-solid); border: 1px solid var(--line);
+      border-radius: 12px; padding: 12px; box-shadow: var(--shadow-soft);
+      animation: fadeIn .2s ease;
+    }
+    .m-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+    .m-title { margin: 8px 0 0; font-weight: 700; line-height: 1.35; }
+    .m-meta { margin-top: 8px; color: color-mix(in srgb, var(--text) 85%, var(--muted)); font-size: .9rem; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(2px); } to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 1024px) {
+      .controls { grid-template-columns: 1fr 180px 180px auto auto; }
+    }
+    @media (max-width: 768px) {
+      .container { width: min(96vw, 1240px); margin-top: 14px; }
+      .controls {
+        top: 6px;
+        grid-template-columns: 1fr 1fr;
+      }
+      .controls .search-wrap { grid-column: 1 / -1; }
+      .controls .find-btn, .controls .theme-btn { grid-column: span 1; }
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .table-wrap { display: none; }
+      .mobile-list { display: grid; }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="glass hero">
+      <h1 class="title">Student Project Groups & Review Schedule</h1>
+      <p class="subtitle">Search first, confirm panel quickly, and see exact review slots.</p>
+      <div class="hero-meta">
+        <span class="meta-pill">🕙 Start: 10:00 PM</span>
+        <span class="meta-pill">🧭 Panels: A(17), B(17), C(16)</span>
+        <span class="meta-pill">⏱ Duration: 15 min / group</span>
+      </div>
+    </section>
+
+    <section class="controls">
+      <label class="search-wrap">
+        <span class="icon">🔍</span>
+        <input id="q" placeholder="Find my group, project, member, or guide">
+      </label>
+      <select id="panel">
+        <option value="ALL">All Panels</option>
+        <option value="A">Panel A</option>
+        <option value="B">Panel B</option>
+        <option value="C">Panel C</option>
+      </select>
+      <select id="sort">
+        <option value="groupAsc">Sort: Group 1 → 50</option>
+        <option value="groupDesc">Sort: Group 50 → 1</option>
+        <option value="panel">Sort: Panel A/B/C</option>
+      </select>
+      <button class="btn-primary find-btn" id="findMine">Find My Group</button>
+      <button class="theme-btn" id="themeToggle">🌙</button>
+    </section>
+
+    <section class="stats">
+      <article class="stat"><div class="stat-head"><span class="ic ic-neutral"></span>Total</div><div class="stat-value" id="total">0</div></article>
+      <article class="stat"><div class="stat-head"><span class="ic ic-a"></span>Panel A</div><div class="stat-value" id="countA">0</div></article>
+      <article class="stat"><div class="stat-head"><span class="ic ic-b"></span>Panel B</div><div class="stat-value" id="countB">0</div></article>
+      <article class="stat"><div class="stat-head"><span class="ic ic-c"></span>Panel C</div><div class="stat-value" id="countC">0</div></article>
+    </section>
+
+    <section class="table-shell">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Group</th>
+              <th>Project</th>
+              <th>Team Members</th>
+              <th>Guide</th>
+              <th>Panel</th>
+              <th>Review Slot</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <div id="mobileList" class="mobile-list"></div>
+      <div id="empty" class="empty"><span class="ico">✨</span>No match found. Try another keyword, group number, or panel.</div>
+    </section>
+  </main>
+
+  <script>
+    const raw = [{"groupNumber":"1","projectTitle":"AI-Assisted Construction Planning and Resource Intelligence System","teamMembers":["SUKHSHUM VAISHNAVI (Team Lead)","KARAN SHARMA","MOHIT KOUL"],"guideName":"Dr. Tariq Rasool"},{"groupNumber":"2","projectTitle":"RoadWise AI: Crowdsourced Pothole Detection","teamMembers":["BHUVAN SHARMA","SIMRITI KAK (Team Lead)","PRATHAM SETH"],"guideName":"Mr. Saurabh Sharma"},{"groupNumber":"3","projectTitle":"ECHOMIND - WEARABLE AI MEMORY ASSISTANT","teamMembers":["RISHIKA ABROL (Team Lead)","ISHIKA RAZDAN","SARTHAK DHAR"],"guideName":"Dr. Naveed Jeelani"},{"groupNumber":"4","projectTitle":"REAL-TIME PUBLIC TRANSPORT TRACKING FOR SMALL CITIES","teamMembers":["SHIVAM PANDOH (Team Lead)","GOKUL KANGOTRA","ANSHUL BHAU"],"guideName":"Mr. Anil Gupta"},{"groupNumber":"5","projectTitle":"AI-Driven Geriatric Medication Adherence System","teamMembers":["PRACHI KHAJURIA","AYUSH BHAT (Team Lead)","MUGDHA NANDA"],"guideName":"Dr. Mehak Mengi"},{"groupNumber":"6","projectTitle":"Guardinet: Automated Action Recognition for Violence Detection","teamMembers":["RIYA SHARMA (Team Lead)","RAGHAV CHOUDHARY","GURSHARAN DEEP SINGH"],"guideName":"Dr. Bhagyalakshmi"},{"groupNumber":"7","projectTitle":"MACA - MIET Animal-Care Application","teamMembers":["JATINDERPAL SINGH (Team Lead)","SAMBHAV MANHAS"],"guideName":"Dr. Tariq Rasool"},{"groupNumber":"8","projectTitle":"ECHOMIND - WEARABLE AI MEMORY ASSISTANT","teamMembers":["ARYAN MANHAS (Team Lead)","GURPARAS SINGH DUTTA","ADHEESH CHOPRA"],"guideName":"Ms. Vani Malagar"},{"groupNumber":"9","projectTitle":"CrickEye - AI Cricket Analytics","teamMembers":["APEKSHIT SHARMA","SHIVANG SANYAL (Team Lead)","UJJWAL RAINA"],"guideName":"Dr. Bhagyalakshmi"},{"groupNumber":"10","projectTitle":"Archeo-Lens: AR Heritage Explorer","teamMembers":["GAURANGI PESHIN","VINAY PRATAP SINGH (Team Lead)","ADITYA MAGOTRA"],"guideName":"Ms. Vani Malagar"},{"groupNumber":"11","projectTitle":"Lightweight Weed Detection in Precision Agriculture","teamMembers":["SHIVAM THAKUR (Team Lead)","MRITUNJAY GUPTA","JASMEET SINGH"],"guideName":"Dr. Bhagyalakshmi"},{"groupNumber":"12","projectTitle":"AI Mental Health Assessment and Monitoring","teamMembers":["GURSHEEN SINGH (Team Lead)","DEVISH VERMA","KAVYA SHARMA"],"guideName":"Ms. Sukhmeet Kour"},{"groupNumber":"13","projectTitle":"CORA - Cognitive Orchestration and Reasoning Allocator","teamMembers":["RUDER RAZDAN","AAKASH SHARMA","MOHAMMAD ZAIEEM KHAN (Team Lead)"],"guideName":"Dr. Naveed Jeelani"},{"groupNumber":"14","projectTitle":"Crowd Lens Campus CCTV Anomaly Detection","teamMembers":["RISHIBA VUTHOO (Team Lead)","RUTVI TICKOO","NIKHIL GUPTA"],"guideName":"Dr. Naveed Jeelani"},{"groupNumber":"15","projectTitle":"Traffic Congestion Monitoring and Prediction","teamMembers":["SUSHAIVI KANDHARI (Team Lead)","NITISH SINGH DAMATHIA","VIREN PRATAP SINGH"],"guideName":"Dr. Mehak Mengi"},{"groupNumber":"16","projectTitle":"Multi-Agent Grievance Resolution System","teamMembers":["MANYA GUPTA (Team Lead)","RUHANI BHASIN","GUNISHA AGGARWAL"],"guideName":"Ms. Veena Tripathi"},{"groupNumber":"17","projectTitle":"RepoLens - AI Context Aware Code Review","teamMembers":["ANSH JAMWAL (Team Lead)","ARMAAN SINGH BHAU","SURYANSH SINGH JASROTIA"],"guideName":"Ms. Vishalika"},{"groupNumber":"18","projectTitle":"AI Smart Public Transportation System","teamMembers":["BALORIKA CHIB (Team Lead)","LAKSH HEER","ARYAN SHARMA"],"guideName":"Dr. Sakshi Popli"},{"groupNumber":"19","projectTitle":"LifeLink: Cloud Blood Banking Solution","teamMembers":["ANSHIKA BHAT (Team Lead)","AAKARSH SAHNI","KAREENA BAZAZ"],"guideName":"Dr. Mehak Mengi"},{"groupNumber":"20","projectTitle":"AI-Enabled CRM for Food Delivery","teamMembers":["SHOWKAT HUSSAIN PARRAY","SUJAL MAGOTRA","SMARTH SACHDEVA (Team Lead)"],"guideName":"Dr. Mehak Mengi"},{"groupNumber":"21","projectTitle":"CredLearn Blockchain Peer Learning","teamMembers":["AKSHIT SHARMA","KINJAL PARIHAR","DHRUV SUNDAN (Team Lead)"],"guideName":"Ms. Vishalika"},{"groupNumber":"22","projectTitle":"AI-Based Governance Monitoring System","teamMembers":["BHARGVESH BANSOTRA (Team Lead)","ANJALI DEVI","ARADHYA SHARMA"],"guideName":"Dr. Tariq Rasool"},{"groupNumber":"23","projectTitle":"OmniBridge Multimodal Communication Ecosystem","teamMembers":["RISHIPAL SINGH (Team Lead)","SHARESHT MISHRA","ALAGAN CHALOTRA"],"guideName":"Dr. Sakshi Popli"},{"groupNumber":"24","projectTitle":"AI Placement Prep Platform","teamMembers":["AKANKSHA SHARMA","AASHRAY KHAJURIA","SANCHIT ARORA (Team Lead)"],"guideName":"Ms. Veena Tripathi"},{"groupNumber":"25","projectTitle":"AI Smart Accident Detection and Response","teamMembers":["HARDIK VASHISHT (Team Lead)","MOHD AFFAN CHOUDHARY","MOHAMMED RAZIN"],"guideName":"Ms. Niharika Sharma"},{"groupNumber":"26","projectTitle":"Evalis Unified Assessment Portal","teamMembers":["REEVA GUPTA (Team Lead)","VIDHI MAHAJAN","ARPIT THAKUR"],"guideName":"Ms. Niharika Sharma"},{"groupNumber":"27","projectTitle":"SmartNudge Academic Productivity System","teamMembers":["ABHIMANYU JAMWAL (Team Lead)","ANSH GUPTA","ANISH SHARMA"],"guideName":"Ms. Sukhmeet Kour"},{"groupNumber":"28","projectTitle":"Sarcasm vs Misinformation Analysis","teamMembers":["SANJAM KOUR","RISHIKA DOGRA","MITTUL GUPTA"],"guideName":"Mr. Anil Gupta"},{"groupNumber":"29","projectTitle":"Smart Railway Navigation System","teamMembers":["ANIKET MANHAS (Team Lead)","AKANKSHA KOTWAL"],"guideName":"Ms. Vani Malagar"},{"groupNumber":"30","projectTitle":"AI Personalized Learning Dashboard","teamMembers":["MANDEEP KOUR","TUSHAR SHARMA (Team Lead)","VANSHIKA BINDROO"],"guideName":"Dr. Payal Maken"},{"groupNumber":"31","projectTitle":"Night-Time Traffic Violation Detection","teamMembers":["NISHANT PATYAD (Team Lead)","DUSHYANT KESAR","ABHISHEK ABROL"],"guideName":"Ms. Niharika Sharma"},{"groupNumber":"32","projectTitle":"MIETGPT Voice-Based Campus Assistant","teamMembers":["AKSHITAA SHARMA","MANAN TAHIR","FURQAAN ABASS (Team Lead)"],"guideName":"Dr. Tariq Rasool"},{"groupNumber":"33","projectTitle":"Intelligent Academic Scheduling Support","teamMembers":["LOMASH GUPTA","PRAGUNI SANOTRA (Team Lead)","AAKARSHAN VERMA"],"guideName":"Mr. Saurabh Sharma"},{"groupNumber":"34","projectTitle":"Sentiment Analysis of Public Comments","teamMembers":["MOHD NAUMAAN","ARNAV SINGH","SPARSH MAHAJAN (Team Lead)"],"guideName":"Dr. Payal Maken"},{"groupNumber":"35","projectTitle":"CogniFlow Retail Intelligence","teamMembers":["ADITYA PRATAP SINGH","ANMOL SINGH","ARCHIT GUPTA (Team Lead)"],"guideName":"Ms. Veena Tripathi"},{"groupNumber":"36","projectTitle":"AI Crime Prediction Safety Map","teamMembers":["KARAN SINGH","RAMAN PRATAP SINGH","CHARU DHARMAT SHARMA (Team Lead)"],"guideName":"Dr. Naveed Jeelani"},{"groupNumber":"37","projectTitle":"MindSense Stress Detection","teamMembers":["SHIV PRASHAD KHANNA","KARMANYA SINGH (Team Lead)","NARAYAN BARGOTRA"],"guideName":"Ms. Vishalika"},{"groupNumber":"38","projectTitle":"Athlete Vision Performance Analysis","teamMembers":["AMISHA SHARMA","DEVYANI VAID (Team Lead)","AMAN MANHAS"],"guideName":"Dr. Sakshi Popli"},{"groupNumber":"39","projectTitle":"Youth Connect Volunteer Matching","teamMembers":["SAKSHAM MAHAJAN (Team Lead)","SAJAD AHMED","KANAV JANDIAL"],"guideName":"Ms. Vishalika"},{"groupNumber":"40","projectTitle":"AaharAI Food Quality and Edibility Detection","teamMembers":["UTKARSH TICKOO","DANIESH SHARMA","SUSHEAN SHARMA (Team Lead)"],"guideName":"Ms. Vani Malagar"},{"groupNumber":"41","projectTitle":"AIVA Vision Assistant","teamMembers":["ARJUN SINGH BANDRAL (Team Lead)","MITALI KOTWAL","DIMPLE PARIHAR"],"guideName":"Dr. Bhagyalakshmi"},{"groupNumber":"42","projectTitle":"CyberBait Scam Detection","teamMembers":["TANVIR SINGH (Team Lead)","AKSHIT THAPA","VISHWA BANDHU"],"guideName":"Mr. Saurabh Sharma"},{"groupNumber":"43","projectTitle":"SAMARTH Neuromotor Screening","teamMembers":["VANSH BARGOTRA (Team Lead)","PRACHI SHARMA"],"guideName":"Mr. Saurabh Sharma"},{"groupNumber":"44","projectTitle":"AI Smart Fitness and Gym Automation","teamMembers":["PARTH BADRAL (Team Lead)","MRIDUL KRISHNA","MANIK SINGH"],"guideName":"Dr. Payal Maken"},{"groupNumber":"45","projectTitle":"Healthcare Analytics Dashboard with NLP Chatbot","teamMembers":["AJITESH BARGOTRA (Team Lead)","AAYUSH THAKUR"],"guideName":"Dr. Payal Maken"},{"groupNumber":"46","projectTitle":"MedScript Medical Transcription System","teamMembers":["DANISH S CHAMBIAL","ASHUTOSH ABROL","AARTI PANDITA (Team Lead)"],"guideName":"Dr. Sakshi Popli"},{"groupNumber":"47","projectTitle":"AI Smart Attendance Face Recognition","teamMembers":["SHARVN MANHAS (Team Lead)","VASU MAHAJAN","ADITYA AVASTHI"],"guideName":"Ms. Sukhmeet Kour"},{"groupNumber":"48","projectTitle":"AI CV Analyzer and Ranking System","teamMembers":["SOURAV","MANAV GUPTA (Team Lead)","CHANDANI SHARMA"],"guideName":"Ms. Sukhmeet Kour"},{"groupNumber":"49","projectTitle":"AI Interview Evaluation Platform","teamMembers":["SHOIEB ALI","HASSNAIN CHOUDHARY (Team Lead)","MOHD WASIM"],"guideName":"Mr. Anil Gupta"},{"groupNumber":"50","projectTitle":"FinSecure AI Payment Fraud Detection","teamMembers":["ANANYA (Team Lead)"],"guideName":"Mr. Anil Gupta"}];
+
+    const rowsEl = document.getElementById("rows");
+    const mobileListEl = document.getElementById("mobileList");
+    const emptyEl = document.getElementById("empty");
+    const searchEl = document.getElementById("q");
+    const panelEl = document.getElementById("panel");
+    const sortEl = document.getElementById("sort");
+    const findMineBtn = document.getElementById("findMine");
+    const themeToggle = document.getElementById("themeToggle");
+
+    const start = new Date(2026, 3, 2, 22, 0, 0);
+    const sortedByGroup = [...raw].sort((a, b) => Number(a.groupNumber) - Number(b.groupNumber));
+    const addMins = (d, m) => new Date(d.getTime() + m * 60000);
+    const formatTime = (d) => {
+      let h = d.getHours();
+      const mm = String(d.getMinutes()).padStart(2, "0");
+      const ap = h >= 12 ? "PM" : "AM";
+      h = h % 12 || 12;
+      return h + ":" + mm + " " + ap;
+    };
+
+    function assignPanel(list, panelCode) {
+      return list.map((item, i) => {
+        const s = addMins(start, i * 15);
+        const e = addMins(s, 15);
+        return { ...item, panel: panelCode, slot: i + 1, review: "Thursday " + formatTime(s) + " - " + formatTime(e) };
+      });
+    }
+
+    const scheduled = [
+      ...assignPanel(sortedByGroup.slice(0, 17), "A"),
+      ...assignPanel(sortedByGroup.slice(17, 34), "B"),
+      ...assignPanel(sortedByGroup.slice(34), "C")
+    ];
+
+    document.getElementById("total").textContent = String(scheduled.length);
+    document.getElementById("countA").textContent = "17";
+    document.getElementById("countB").textContent = "17";
+    document.getElementById("countC").textContent = "16";
+
+    function escapeHTML(text) {
+      return String(text).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+    }
+    function highlight(text, query) {
+      const safe = escapeHTML(text);
+      if (!query) return safe;
+      const q = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      return safe.replace(new RegExp("(" + q + ")", "ig"), "<mark>$1</mark>");
+    }
+    function panelClass(p) {
+      if (p === "A") return "panel-a";
+      if (p === "B") return "panel-b";
+      return "panel-c";
+    }
+    function sortList(list, mode) {
+      const arr = [...list];
+      if (mode === "groupDesc") arr.sort((a, b) => Number(b.groupNumber) - Number(a.groupNumber));
+      else if (mode === "panel") arr.sort((a, b) => a.panel.localeCompare(b.panel) || a.slot - b.slot);
+      else arr.sort((a, b) => Number(a.groupNumber) - Number(b.groupNumber));
+      return arr;
+    }
+
+    function render() {
+      const q = searchEl.value.trim().toLowerCase();
+      const panel = panelEl.value;
+      const sortMode = sortEl.value;
+      let list = scheduled.filter((item) => {
+        const panelOk = panel === "ALL" || item.panel === panel;
+        const textOk =
+          !q ||
+          item.groupNumber.toLowerCase().includes(q) ||
+          item.projectTitle.toLowerCase().includes(q) ||
+          item.guideName.toLowerCase().includes(q) ||
+          item.teamMembers.some((m) => m.toLowerCase().includes(q));
+        return panelOk && textOk;
+      });
+      list = sortList(list, sortMode);
+
+      rowsEl.innerHTML = "";
+      mobileListEl.innerHTML = "";
+      emptyEl.style.display = list.length ? "none" : "block";
+
+      list.forEach((item) => {
+        const row = document.createElement("tr");
+        row.id = "group-" + item.groupNumber;
+        row.innerHTML = `
+          <td><strong>${highlight("Group " + item.groupNumber, q)}</strong></td>
+          <td>${highlight(item.projectTitle, q)}</td>
+          <td><div class="members">${item.teamMembers.map((m) => `<span class="member ${m.toLowerCase().includes("team lead") ? "lead" : ""}">${highlight(m, q)}</span>`).join("")}</div></td>
+          <td>${highlight(item.guideName, q)}</td>
+          <td><span class="badge ${panelClass(item.panel)}">Panel ${item.panel} (Slot ${item.slot})</span></td>
+          <td><span class="slot">🕒 ${item.review}</span></td>
+        `;
+        rowsEl.appendChild(row);
+
+        const card = document.createElement("article");
+        card.className = "m-card";
+        card.innerHTML = `
+          <div class="m-top">
+            <strong>${highlight("Group " + item.groupNumber, q)}</strong>
+            <span class="badge ${panelClass(item.panel)}">Panel ${item.panel}</span>
+          </div>
+          <div class="m-title">${highlight(item.projectTitle, q)}</div>
+          <div class="m-meta"><strong>Team:</strong> ${item.teamMembers.map((m) => highlight(m, q)).join(", ")}</div>
+          <div class="m-meta"><strong>Guide:</strong> ${highlight(item.guideName, q)}</div>
+          <div class="m-meta"><span class="slot">🕒 ${item.review}</span></div>
+        `;
+        mobileListEl.appendChild(card);
+      });
+    }
+
+    findMineBtn.addEventListener("click", () => {
+      searchEl.focus();
+      if (searchEl.value.trim()) {
+        const first = document.querySelector("#rows tr");
+        if (first) first.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    });
+
+    themeToggle.addEventListener("click", () => {
+      document.body.classList.toggle("dark");
+      themeToggle.textContent = document.body.classList.contains("dark") ? "☀️" : "🌙";
+    });
+
+    searchEl.addEventListener("input", render);
+    panelEl.addEventListener("change", render);
+    sortEl.addEventListener("change", render);
+    render();
+  </script>
+</body>
+</html>
